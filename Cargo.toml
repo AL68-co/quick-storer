@@ -4,7 +4,15 @@ version = "0.1.0"
 edition = "2021"
 authors = ["AlbertLarsan68"]
 license = "MIT OR Apache-2.0"
+readme = "README.md"
+description = "An easy to use file and folder storing software"
+repository = "https://github.com/AL68-co/quick-storer"
+categories = ["command-line-utilities", "compression", "data-structures", "encoding", "filesystem"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+brotli = "3.3.3"
+lazy_static = "1.4.0"
+mla = "1.2.0"
+structopt = "0.3.26"
