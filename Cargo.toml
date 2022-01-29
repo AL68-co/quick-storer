@@ -16,3 +16,13 @@ brotli = "3.3.3"
 lazy_static = "1.4.0"
 mla = "1.2.0"
 structopt = "0.3.26"
+
+[build-dependencies]
+image = { version = "0.23.14", features = ["ico", "png"], default-features = false }
+
+[target]
+
+[target."cfg(windows)"]
+
+[target."cfg(windows)".build-dependencies]
+winres = "0.1.12"
