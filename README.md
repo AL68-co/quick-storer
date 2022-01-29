@@ -5,7 +5,7 @@ This is a Rust application that compress files and folders.
 ## Usage
 
 Download or build the binary and place it on your desktop, or any other easy-to-access place.  
-Then, drag-and-drop a file or a folder onto the executable. A compressed file is created, which you can decompress by drag-and-dropping onto the executable.
+Then, drag-and-drop a file or a folder onto the executable. A compressed file is created, which you can decompress by drag-and-dropping onto the executable.  
 Also works as a CLI app, try with `--help`.
 
 ## License
