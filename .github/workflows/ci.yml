@@ -11,6 +11,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
 
 jobs:
   tests:
@@ -29,14 +30,12 @@ jobs:
           - os: windows-latest
             sccache-path: "C:\\Users\\runner\\AppData\\Local\\Mozilla\\sccache\\cache"
     env:
-      RUST_BACKTRACE: full
       RUSTC_WRAPPER: sccache
       RUSTV: ${{ matrix.rust }}
       SCCACHE_CACHE_SIZE: 5G
       SCCACHE_DIR: ${{ matrix.sccache-path }}
       # SCCACHE_RECACHE: 1 # Uncomment this to clear cache, then comment it back out
     steps:
-      - uses: actions/checkout@v2
       - name: Install sccache (ubuntu-latest)
         if: matrix.os == 'ubuntu-latest'
         env:
@@ -73,6 +72,8 @@ jobs:
           profile: minimal
           override: true
           components: rustfmt, clippy
+      - name: Checkout repo
+        uses: actions/checkout@v2
       - name: Cache cargo registry
         uses: actions/cache@v2
         continue-on-error: false
@@ -93,17 +94,6 @@ jobs:
             ${{ runner.os }}-sccache-
       - name: Start sccache server
         run: sccache --start-server
-      - name: Check formatting
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all --check
-      - name: Run clippy
-        uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-features
-          name: Clippy (${{ matrix.os }})
       - name: Test the crate
         uses: actions-rs/cargo@v1
         with:
@@ -112,3 +102,64 @@ jobs:
         run: sccache --show-stats
       - name: Stop sccache server
         run: sccache --stop-server || true
+  clippy:
+    name: Lint code with clippy
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+          components: clippy
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Cache cargo registry
+        uses: actions/cache@v2
+        continue-on-error: false
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: clippy-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            clippy-cargo-
+      - name: Run clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features
+  format:
+    name: Check correct code formatting
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+          components: rustfmt
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Cache cargo registry
+        uses: actions/cache@v2
+        continue-on-error: false
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: clippy-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            clippy-cargo-
+      - name: Run format check
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all --check
+
