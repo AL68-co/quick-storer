@@ -4,9 +4,11 @@ on:
   pull_request:
     branches-ignore: 
       - gh-pages
+      - dependabot/*
   push:
     branches-ignore: 
       - gh-pages
+      - dependabot/*
 
 
 env:
@@ -127,10 +129,17 @@ jobs:
           key: clippy-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             clippy-cargo-
-      - name: Run clippy
+      - name: Run clippy with annotations
+        if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features
+      - name: Run clippy manually without annotations
+        if: github.event.pull_request.head.repo.full_name != github.repository || github.actor == 'dependabot[bot]'
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
           args: --all-features
   format:
     name: Check correct code formatting
