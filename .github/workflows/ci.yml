@@ -96,6 +96,10 @@ jobs:
             ${{ runner.os }}-sccache-
       - name: Start sccache server
         run: sccache --start-server
+      - name: Build the crate
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
       - name: Test the crate
         uses: actions-rs/cargo@v1
         with:
