@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        rust: [stable]
+        rust: [stable, beta]
         include:
           - os: ubuntu-latest
             sccache-path: /home/runner/.cache/sccache
@@ -32,6 +32,7 @@ jobs:
           - os: windows-latest
             sccache-path: "C:\\Users\\runner\\AppData\\Local\\Mozilla\\sccache\\cache"
     env:
+      CARGO_INCREMENTAL: false
       RUSTC_WRAPPER: sccache
       RUSTV: ${{ matrix.rust }}
       SCCACHE_CACHE_SIZE: 5G
@@ -167,7 +168,7 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: clippy-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: rustfmt-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             clippy-cargo-
       - name: Run format check
