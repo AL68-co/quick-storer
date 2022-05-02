@@ -16,9 +16,7 @@ pub const DIR_EXTENSION: &str = \"{}\";",
         String::from("csdir")
     )?;
     #[cfg(windows)]
-    {
-        windows_part()?;
-    };
+    windows_part()?;
 
     Ok(())
 }

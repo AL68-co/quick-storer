@@ -20,8 +20,8 @@ struct CLIOptions {
     #[structopt(short, long)]
     verbose: bool,
     /// The input file
-    #[structopt(parse(from_os_str))]
-    input: PathBuf,
+    #[structopt(parse(from_os_str), min_values(1), required(true))]
+    input: Vec<PathBuf>,
     /// Forces the rewrite of files
     #[structopt(short, long)]
     force: bool,
@@ -36,39 +36,40 @@ mod config {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let input = CLI_OPTIONS.input.clone();
-    if CLI_OPTIONS.verbose {
-        println!("{}", input.display());
-    }
-    if input.is_dir() {
-        store_dir(input.as_path())?;
-    } else if !input.is_file() {
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidInput,
-            "The argument is not a file nor a directory",
-        )
-        .into());
-    } else {
-        match input.extension() {
-            Some(ext) => {
-                if ext == OsString::from(config::FILE_EXTENSION).as_os_str() {
-                    load_file(&input)?;
-                } else if ext == OsString::from(config::DIR_EXTENSION).as_os_str() {
-                    load_dir(&input)?;
-                } else {
-                    store_file(&input)?;
+    for input in CLI_OPTIONS.input.iter() {
+        if CLI_OPTIONS.verbose {
+            println!("{}", input.display());
+        }
+        if input.is_dir() {
+            store_dir(input)?;
+        } else if !input.is_file() {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "The argument is not a file nor a directory",
+            )
+            .into());
+        } else {
+            match input.extension() {
+                Some(ext) => {
+                    if ext == OsString::from(config::FILE_EXTENSION).as_os_str() {
+                        load_file(input)?;
+                    } else if ext == OsString::from(config::DIR_EXTENSION).as_os_str() {
+                        load_dir(input)?;
+                    } else {
+                        store_file(input)?;
+                    }
                 }
-            }
-            None => store_file(&input)?,
-        };
+                None => store_file(input)?,
+            };
+        }
     }
 
     Ok(())
 }
 
-fn load_file(input: &Path) -> Result<(), Box<dyn std::error::Error>> {
-    let mut input_file = BufReader::new(File::open(&input)?);
-    let output = input.with_extension("");
+fn load_file(input: impl AsRef<Path>) -> Result<(), Box<dyn std::error::Error>> {
+    let mut input_file = BufReader::new(File::open(input.as_ref())?);
+    let output = input.as_ref().with_extension("");
     if CLI_OPTIONS.verbose {
         println!("{}", output.display());
     }
@@ -85,10 +86,10 @@ fn load_file(input: &Path) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn store_file(input: &Path) -> Result<(), Box<dyn std::error::Error>> {
-    let mut input_file = BufReader::new(File::open(&input)?);
+fn store_file(input: impl AsRef<Path>) -> Result<(), Box<dyn std::error::Error>> {
+    let mut input_file = BufReader::new(File::open(input.as_ref())?);
     let output = PathBuf::from({
-        let mut output = input.as_os_str().to_owned();
+        let mut output = input.as_ref().as_os_str().to_owned();
         output.push(format!(".{}", config::FILE_EXTENSION));
         output
     });
@@ -112,14 +113,14 @@ fn store_file(input: &Path) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn load_dir(input: &Path) -> Result<(), Box<dyn std::error::Error>> {
-    let input_file = BufReader::new(File::open(input)?);
+fn load_dir(input: impl AsRef<Path>) -> Result<(), Box<dyn std::error::Error>> {
+    let input_file = BufReader::new(File::open(input.as_ref())?);
     let mut archive_reader = ArchiveReader::new(input_file)?;
     let iter = archive_reader.list_files()?.cloned().collect::<Vec<_>>();
     let nb_of_files = iter.len();
     for (i, file_string) in iter.into_iter().enumerate() {
         let file_path = {
-            let mut bd = input.to_path_buf();
+            let mut bd = input.as_ref().to_path_buf();
             bd.pop();
             let mut path = bd.as_os_str().to_owned();
             path.push(&file_string);
@@ -147,9 +148,9 @@ fn load_dir(input: &Path) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn store_dir(input: &Path) -> Result<(), Box<dyn std::error::Error>> {
+fn store_dir(input: impl AsRef<Path>) -> Result<(), Box<dyn std::error::Error>> {
     let output = PathBuf::from({
-        let mut output = input.as_os_str().to_owned();
+        let mut output = input.as_ref().as_os_str().to_owned();
         output.push(format!(".{}", config::DIR_EXTENSION));
         output
     });
@@ -176,24 +177,27 @@ fn store_dir(input: &Path) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn traverse_and_store_dir<W: Write>(
-    current_dir: &Path,
-    root: &Path,
+    current_dir: impl AsRef<Path>,
+    root: impl AsRef<Path>,
     archive_writer: &mut ArchiveWriter<W>,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let iter: Vec<_> = (current_dir.read_dir()?).flatten().enumerate().collect();
+    let iter: Vec<_> = (current_dir.as_ref().read_dir()?)
+        .flatten()
+        .enumerate()
+        .collect();
     let len = iter.len();
     for (i, file) in iter {
         if file.path().is_dir() {
-            let mut new_root = root.as_os_str().to_owned();
+            let mut new_root = root.as_ref().as_os_str().to_owned();
             new_root.push("/");
-            new_root.push(current_dir.file_name().unwrap());
+            new_root.push(current_dir.as_ref().file_name().unwrap());
             traverse_and_store_dir(&file.path(), &PathBuf::from(new_root), archive_writer)?;
         } else if file.path().is_file() {
             let input_file_handler = BufReader::new(File::open(file.path())?);
             let file_path = {
-                let mut p = root.as_os_str().to_owned();
+                let mut p = root.as_ref().as_os_str().to_owned();
                 p.push("/");
-                p.push(current_dir.file_name().unwrap());
+                p.push(current_dir.as_ref().file_name().unwrap());
                 p.push("/");
                 p.push(file.path().file_name().unwrap());
                 p
