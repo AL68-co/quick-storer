@@ -20,9 +20,5 @@ structopt = "0.3.26"
 [build-dependencies]
 image = { version = "0.24.2", features = ["ico", "png"], default-features = false }
 
-[target]
-
-[target."cfg(windows)"]
-
 [target."cfg(windows)".build-dependencies]
 winres = "0.1.12"
