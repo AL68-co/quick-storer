@@ -10,7 +10,7 @@ This is a Rust application that compress files and folders.
 
 Install rustup by following the instructions at [rustup.rs](https://rustup.rs)
 
-Once installed, run `cargo install --locked quick-storer`, and it is available through the command `quick-storer`.
+Once installed, run `cargo install --frozen quick-storer --profile=fast`, and it is available through the command `quick-storer`.
 
 ### Using prebuilt binaries
 
