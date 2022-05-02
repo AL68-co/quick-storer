@@ -1,12 +1,39 @@
 # Quick Storer
 
+![Crates.io](https://img.shields.io/crates/d/quick-storer) ![Crates.io](https://img.shields.io/crates/v/quick-storer) ![Crates.io](https://img.shields.io/crates/l/quick-storer) [![CI](https://github.com/AL68-co/quick-storer/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AL68-co/quick-storer/actions/workflows/ci.yml)
+
 This is a Rust application that compress files and folders.
+
+## Installation
+
+### Cargo (recommanded)
+
+Install rustup by following the instructions at [rustup.rs](https://rustup.rs)
+
+Once installed, run `cargo install --locked quick-storer`, and it is available through the command `quick-storer`.
+
+### Using prebuilt binaries
+
+Go to the [releases page](https://github.com/AL68-co/quick-storer/releases/latest), and download the executable corresponding to your computer. Put the binary somewhere in your `$PATH` if you want to use it from the command line and/or on your desktop if you want to use it using the drag-and-drop way.
 
 ## Usage
 
-Download or build the binary and place it on your desktop, or any other easy-to-access place.  
-Then, drag-and-drop a file or a folder onto the executable. A compressed file is created, which you can decompress by drag-and-dropping onto the executable.  
+Drag-and-drop a file or a folder onto the executable. A compressed file is created, which you can decompress by drag-and-dropping onto the executable.  
 Also works as a CLI app, try with `--help`.
+
+## Support
+
+Go to the [Issues page](https://github.com/AL68-co/quick-storer/issues).
+
+## Roadmap
+
+- Make the multi-file support better
+- Create tests
+
+## Contributing
+
+This project accepts any types of contributions.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more details
 
 ## License
 
