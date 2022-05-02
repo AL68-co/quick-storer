@@ -12,8 +12,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         config_file,
         "pub const FILE_EXTENSION: &str = \"{}\";\n\
 pub const DIR_EXTENSION: &str = \"{}\";",
-        String::from("csfile"),
-        String::from("csdir")
+        String::from("qsfile"),
+        String::from("qsdir")
     )?;
     #[cfg(windows)]
     windows_part()?;
