@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2022-05-16
+
 ### !!!⚠️!!! BREAKING CHANGE
 
 - Now, there is no difference between single file and diretories storage, all saves as `.qs` files.
@@ -22,4 +24,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/AL68-co/quick-storer/compare/v1.0.0...HEAD
 
+[2.0.0]: https://github.com/AL68-co/quick-storer/compare/v1.0.0...v2.0.0/
 [1.0.0]: https://github.com/AL68-co/quick-storer/compare/645da28fdb2578dd9d9b23efcb7c7de18edbb8ec...v1.0.0/
