@@ -10,10 +10,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         BufWriter::new(File::create(format!("{}/config.rs", env::var("OUT_DIR")?))?);
     write!(
         config_file,
-        "pub const FILE_EXTENSION: &str = \"{}\";\n\
-pub const DIR_EXTENSION: &str = \"{}\";",
-        String::from("qsfile"),
-        String::from("qsdir")
+        r#"pub const EXTENSION: &str = "{}";"#,
+        String::from("qs")
     )?;
     #[cfg(windows)]
     windows_part()?;

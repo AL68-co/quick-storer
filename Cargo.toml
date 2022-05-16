@@ -12,7 +12,6 @@ categories = ["command-line-utilities", "compression", "data-structures", "encod
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-brotli = "3.3.4"
 lazy_static = "1.4.0"
 mla = "1.2.0"
 structopt = "0.3.26"
@@ -22,3 +21,5 @@ image = { version = "0.24.2", features = ["ico", "png"], default-features = fals
 
 [target."cfg(windows)".build-dependencies]
 winres = "0.1.12"
+
+[features]

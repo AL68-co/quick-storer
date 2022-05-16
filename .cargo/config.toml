@@ -10,9 +10,13 @@ lto = "thin"
 [profile.tiny]
 inherits = "release"
 opt-level = "z"
+lto = true
 codegen-units = 1
 
 [profile.fast]
 inherits = "release"
 lto = true
 codegen-units = 1
+
+[build]
+rustflags = ["-Ctarget-cpu=native"]

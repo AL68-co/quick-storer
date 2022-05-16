@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### !!!⚠️!!! BREAKING CHANGE
+
+- Now, there is no difference between single file and diretories storage, all saves as `.qs` files.
+
 ### Changed
 - Change to the CLI to support multiple files or directories at once
-- !!!⚠️!!! BREAKING CHANGE: the default extension changed from `.cs*` to `.qs*`
 
 ## [1.0.0] - 2022-02-28
 
