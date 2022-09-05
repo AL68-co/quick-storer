@@ -13,7 +13,7 @@ categories = ["command-line-utilities", "compression", "data-structures", "encod
 
 [dependencies]
 lazy_static = "1.4.0"
-mla = "1.2.0"
+mla = "1.3.0"
 structopt = "0.3.26"
 
 [build-dependencies]
